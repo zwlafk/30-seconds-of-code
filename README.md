@@ -305,66 +305,70 @@ arrayMax([1,2,4])  // 4
 
 ### arrayGcd
 
-Calculates the greatest common denominator (gcd) of an array of numbers.
+计算数组中数字的最大公约数。
+<!-- Calculates the greatest common denominator (gcd) of an array of numbers. -->
 
-Use `Array.reduce()` and the `gcd` formula (uses recursion) to calculate the greatest common denominator of an array of numbers.
+使用 `Array.reduce()` 和 `gcd` 递归计算数组中的最大公约数。
 
 ```js
-const arrayGcd = arr => {
+const arrayGcd = arr =>{
   const gcd = (x, y) => !y ? x : gcd(y, x % y);
-  return arr.reduce((a, b) => gcd(a, b));
-};
+  return arr.reduce((a,b) => gcd(a,b));
+}
+// arrayGcd([1,2,3,4,5]) -> 1
+// arrayGcd([4,8,12]) -> 4
 ```
-
-```js
-arrayGcd([1,2,3,4,5]) // 1
-arrayGcd([4,8,12]) // 4
+```
+其中
+const gcd = (x, y) => !y ? x : gcd(y, x % y);
+定义的是一个使用辗转相除法递归计算两数最大公约数的函数
+当y为0时，x就是最大公约数，否则进一步对y和x与y取模运算的结果使用辗转相除法，直到y为0
 ```
 
 [⬆ back to top](#table-of-contents)
 
 ### arrayLcm
 
-Calculates the lowest common multiple (lcm) of an array of numbers.
+计算数组中数字的最小公倍数。
 
-Use `Array.reduce()` and the `lcm` formula (uses recursion) to calculate the lowest common multiple of an array of numbers.
+使用 `Array.reduce()` 和 `lcm` 递归计算最小公倍数。
 
 ```js
-const arrayLcm = arr => {
+const arrayLcm = arr =>{
   const gcd = (x, y) => !y ? x : gcd(y, x % y);
-  const lcm = (x, y) => (x * y) / gcd(x, y);
-  return arr.reduce((a, b) => lcm(a, b));
-};
+  const lcm = (x, y) => (x*y)/gcd(x, y); 
+  return arr.reduce((a,b) => lcm(a,b));
+}
+// arrayLcm([1,2,3,4,5]) -> 60
+// arrayLcm([4,8,12]) -> 24
+```
+```
+其中
+const lcm = (x, y) => (x*y)/gcd(x, y); 
+定义的是最小公倍数计算的公式，两数之积处以两数的最大公约数就得到两数的最小公倍数
 ```
 
-```js
-arrayLcm([1,2,3,4,5]) // 60
-arrayLcm([4,8,12]) // 24
-```
 
 [⬆ back to top](#table-of-contents)
 
 ### arrayMax
 
-Returns the maximum value in an array.
+返回数组中的最大值
 
-Use `Math.max()` combined with the spread operator (`...`) to get the maximum value in the array.
+使用 `Math.max()` 结合扩展运算符 (`...`) 得到数组中的最大值。
 
 ```js
 const arrayMax = arr => Math.max(...arr);
-```
-
-```js
-arrayMax([10, 1, 5]) // 10
+// arrayMax([10, 1, 5]) -> 10
 ```
 
 [⬆ back to top](#table-of-contents)
 
 ### arrayMin
 
-Returns the minimum value in an array.
+返回数组中的最小值。
 
-Use `Math.min()` combined with the spread operator (`...`) to get the minimum value in the array.
+使用 `Math.min()` 结合扩展运算符 (`...`) 得到数组中的最小值。
 
 ```js
 const arrayMin = arr => Math.min(...arr);
@@ -378,28 +382,30 @@ arrayMin([10, 1, 5]) // 1
 
 ### chunk
 
-Chunks an array into smaller arrays of a specified size.
+将一个数组分成特定长度的若干数组。
 
-Use `Array.from()` to create a new array, that fits the number of chunks that will be produced.
-Use `Array.slice()` to map each element of the new array to a chunk the length of `size`.
-If the original array can't be split evenly, the final chunk will contain the remaining elements.
+使用[`Array.from()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/from)创建新的数组。
+使用`Array.slice()`将新数组的每个元素映射到`size`长度的区块。
+如果原始数组不能均匀拆分, 则最终的块将包含剩余的元素。
 
 ```js
 const chunk = (arr, size) =>
   Array.from({length: Math.ceil(arr.length / size)}, (v, i) => arr.slice(i * size, i * size + size));
-```
-
-```js
 chunk([1,2,3,4,5], 2) // [[1,2],[3,4],[5]]
+```
+```
+Array.from()的目的是产生一个数组
+第一个参数是一个对象，length就是这个新数组的length
+第二个参数是一个函数，新数组中的每个元素会执行该函数，这里定义的函数返回的是一个数组，它是根据原数组（arr）和分块大小（size）之间特定的关系而得到的，也就是新数组当前索引位置（i）处的chunk
 ```
 
 [⬆ back to top](#table-of-contents)
 
 ### compact
 
-Removes falsey values from an array.
+移除数组中表示否的元素。
 
-Use `Array.filter()` to filter out falsey values (`false`, `null`, `0`, `""`, `undefined`, and `NaN`).
+使用 `Array.filter()` 过滤掉否值 (`false`, `null`, `0`, `""`, `undefined`, and `NaN`).
 
 ```js
 const compact = arr => arr.filter(Boolean);
@@ -413,9 +419,9 @@ compact([0, 1, false, 2, '', 3, 'a', 'e'*23, NaN, 's', 34]) // [ 1, 2, 3, 'a', '
 
 ### countOccurrences
 
-Counts the occurrences of a value in an array.
+统计数组中某个值出现的次数。
 
-Use `Array.reduce()` to increment a counter each time you encounter the specific value inside the array.
+使用 `Array.reduce()` ，每次遇到特定的值就使计数器加1。
 
 ```js
 const countOccurrences = (arr, value) => arr.reduce((a, v) => v === value ? a + 1 : a + 0, 0);
@@ -429,11 +435,11 @@ countOccurrences([1,1,2,1,2,3], 1) // 3
 
 ### deepFlatten
 
-Deep flattens an array.
+深度扁平化一个数组。
 
-Use recursion.
-Use `Array.concat()` with an empty array (`[]`) and the spread operator (`...`) to flatten an array.
-Recursively flatten each element that is an array.
+使用递归。
+使用 `Array.concat()` 结合一个空数组 (`[]`) 和扩展运算符 (`...`) 扁平化一个数组。
+对数组中的每个元素递归扁平。
 
 ```js
 const deepFlatten = arr => [].concat(...arr.map(v => Array.isArray(v) ? deepFlatten(v) : v));
@@ -447,9 +453,9 @@ deepFlatten([1,[2],[[3],4],5]) // [1,2,3,4,5]
 
 ### difference
 
-Returns the difference between two arrays.
+返回两个数组中的不同元素。
 
-Create a `Set` from `b`, then use `Array.filter()` on `a` to only keep values not contained in `b`.
+使用  `b`初始化一个`Set` , 然后用 `Array.filter()` 过滤掉 `a` 中有而 `b`中没有的值。
 
 ```js
 const difference = (a, b) => { const s = new Set(b); return a.filter(x => !s.has(x)); };
@@ -458,7 +464,11 @@ const difference = (a, b) => { const s = new Set(b); return a.filter(x => !s.has
 ```js
 difference([1,2,3], [1,2,4]) // [3]
 ```
-
+```
+set是ES6中新扩展的数据结构
+set类似于数组，但是set中不能有重复的元素
+一个数组去重的新方法：Array.from(new Set(array))
+```
 [⬆ back to top](#table-of-contents)
 
 ### differenceWith
