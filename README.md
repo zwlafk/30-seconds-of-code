@@ -473,9 +473,9 @@ set类似于数组，但是set中不能有重复的元素
 
 ### differenceWith
 
-Filters out all values from an array for which the comparator function does not return `true`.
+过滤掉数组中比较函数（或者说算子）不返回 `true`的值。
 
-Use `Array.filter()` and `Array.find()` to find the appropriate values.
+使用 `Array.filter()` 和 `Array.find()` 找到适当的值。
 
 ```js
 const differenceWith = (arr, val, comp) => arr.filter(a => !val.find(b => comp(a, b)));
@@ -489,9 +489,9 @@ differenceWith([1, 1.2, 1.5, 3], [1.9, 3], (a,b) => Math.round(a) == Math.round(
 
 ### distinctValuesOfArray
 
-Returns all the distinct values of an array.
+返回数组中不重复的值。（其实就是数组去重）
 
-Use ES6 `Set` and the `...rest` operator to discard all duplicated values.
+使用 ES6的 `Set` 和 `...rest` 操作符来去除重复的值。
 
 ```js
 const distinctValuesOfArray = arr => [...new Set(arr)];
@@ -505,10 +505,9 @@ distinctValuesOfArray([1,2,2,3,4,4,5]) // [1,2,3,4,5]
 
 ### dropElements
 
-Removes elements in an array until the passed function returns `true`. Returns the remaining elements in the array.
+移除数组中的元素，直到函数返回的结果是 `true`。最后返回包含剩余元素的数组。
 
-Loop through the array, using `Array.slice()` to drop the first element of the array until the returned value from the function is `true`.
-Returns the remaining elements.
+循环整个数组，使用 `Array.slice()` 删除当前数组的第一个元素，直到一个元素返回 `true`。
 
 ```js
 const dropElements = (arr, func) => {
@@ -520,14 +519,18 @@ const dropElements = (arr, func) => {
 ```js
 dropElements([1, 2, 3, 4], n => n >= 3) // [3,4]
 ```
-
+```
+乍一看还以为是实现了一个filter
+实际上实际上效果是从头遍历一个数组，只要有一个满足条件就停止循环，返回剩余数组
+dropElements([1, 2, 3, 4, 1, 2], n => n >= 3) // [3,4,1,2]
+```
 [⬆ back to top](#table-of-contents)
 
 ### dropRight
 
-Returns a new array with `n` elements removed from the right.
+返回一个移除了右边 `n` 个元素的新数组
 
-Use `Array.slice()` to slice the remove the specified number of elements from the right.
+使用 `Array.slice()` 
 
 ```js
 const dropRight = (arr, n = 1) => arr.slice(0, -n);
@@ -543,9 +546,9 @@ dropRight([1,2,3], 42) // []
 
 ### everyNth
 
-Returns every nth element in an array.
+返回一个数组中每 nth 个元素。
 
-Use `Array.filter()` to create a new array that contains every nth element of a given array.
+使用 `Array.filter()` 
 
 ```js
 const everyNth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
@@ -559,9 +562,9 @@ everyNth([1,2,3,4,5,6], 2) // [ 2, 4, 6 ]
 
 ### filterNonUnique
 
-Filters out the non-unique values in an array.
+过滤出数组中不重复的元素。
 
-Use `Array.filter()` for an array containing only the unique values.
+使用 `Array.filter()` 
 
 ```js
 const filterNonUnique = arr => arr.filter(i => arr.indexOf(i) === arr.lastIndexOf(i));
@@ -571,13 +574,16 @@ const filterNonUnique = arr => arr.filter(i => arr.indexOf(i) === arr.lastIndexO
 filterNonUnique([1,2,2,3,4,4,5]) // [1,3,5]
 ```
 
+```
+indexOf是返回第一个匹配的索引位置，lastIndexOf是返回最后一个匹配的索引位置
+两者不相等说明数组中存在至少一个与之相同的元素
+```
 [⬆ back to top](#table-of-contents)
 
 ### flatten
 
-Flattens an array.
+扁平化一个数组。
 
-Use a new array and concatenate it with the spread input array causing a shallow denesting of any contained arrays.
 
 ```js
 const flatten = arr => [ ].concat(...arr);
@@ -587,16 +593,20 @@ const flatten = arr => [ ].concat(...arr);
 flatten([1,[2],3,4]) // [1,2,3,4]
 ```
 
+```
+这段代码只能对二维数组有效
+如果是更复杂的多维数组，应该使用前面提到的deepFlatten
+```
 [⬆ back to top](#table-of-contents)
 
 ### flattenDepth
 
-Flattens an array up to the specified depth.
+将一个数组展开（扁平化）到一定深度。
 
-Use recursion, decrementing `depth` by 1 for each level of depth.
-Use `Array.reduce()` and `Array.concat()` to merge elements or arrays.
-Base case, for `depth` equal to `1` stops recursion.
-Omit the second element, `depth` to flatten only to a depth of `1` (single flatten).
+使用递归，逐层降低深度
+使用 `Array.reduce()` 和 `Array.concat()` 把元素或子数组融合到一起
+当深度 `depth` 等于 `1` 时停止递归
+当第二个参数省略的时候, 默认只降低 `1` 层深度`depth` 。
 
 ```js
 const flattenDepth = (arr, depth = 1) =>
@@ -628,6 +638,12 @@ groupBy([6.1, 4.2, 6.3], Math.floor) // {4: [4.2], 6: [6.1, 6.3]}
 groupBy(['one', 'two', 'three'], 'length') // {3: ['one', 'two'], 5: ['three']}
 ```
 
+```
+map之后得到了一个新的数组，这个数组是原数组中元素func作用后的值
+比如这两个例子中map之后的数组是[6,4,6]和[3,3,5]
+然后再和原数组结合生成一个以当前数组为健原数组为值的对象
+如果原数组对应的健已被记录，就用concat连接
+```
 [⬆ back to top](#table-of-contents)
 
 ### head
@@ -643,7 +659,10 @@ const head = arr => arr[0];
 ```js
 head([1,2,3]) // 1
 ```
-
+```
+emmmmmm...
+不写了吧
+```
 [⬆ back to top](#table-of-contents)
 
 ### initial
@@ -659,14 +678,17 @@ const initial = arr => arr.slice(0, -1);
 ```js
 initial([1,2,3]) // [1,2]
 ```
-
+```
+也可以用 arr.pop();return arr 实现
+```
 [⬆ back to top](#table-of-contents)
 
 ### initialize2DArray
 
-Initializes a 2D array of given width and height and value.
+ 初始化一个指定行列数以及值的二维数组。
 
-Use `Array.map()` to generate h rows where each is a new array of size w initialize with value. If the value is not provided, default to `null`.
+使用 `Array.map()` 生成 h 行每行长度为w的新数组，同时初始化数组内元素的值。
+如果没有给定元素值，则默认为 `null`。
 
 ```js
 const initialize2DArray = (w, h, val = null) => Array(h).fill().map(() => Array(w).fill(val));
@@ -680,10 +702,10 @@ initialize2DArray(2, 2, 0) // [[0,0], [0,0]]
 
 ### initializeArrayWithRange
 
-Initializes an array containing the numbers in the specified range where `start` and `end` are inclusive.
+初始化一个数组，包含从 `start` 到 `end` 这段数字。
 
-Use `Array((end + 1) - start)` to create an array of the desired length, `Array.map()` to fill with the desired values in a range.
-You can omit `start` to use a default value of `0`.
+使用 `Array((end + 1) - start)` 创建一个拥有目标长度的数组, `Array.map()` 来填充一段数字
+省略 `start` 则默认为 `0`.
 
 ```js
 const initializeArrayWithRange = (end, start = 0) =>
@@ -695,6 +717,12 @@ initializeArrayWithRange(5) // [0,1,2,3,4,5]
 initializeArrayWithRange(7, 3) // [3,4,5,6,7]
 ```
 
+```
+Array(x)和Array.from({length:x})的区别：
+Array(x)会生成长度为x的空数组，这个空数组如果访问的话会是[empty item]，map对这中空元素似乎无法操作
+Array.from({length:x})也会生成长度为x的空数组，不同的是，访问这个数组的时候可以看到数组内每个元素都是undefined，map当然可以对这类数据进行操作
+所以如果想用Array来实现相同效果的话，可以用Array((end + 1) - start).fill(x).map((v, i) => i + start)
+```
 [⬆ back to top](#table-of-contents)
 
 ### initializeArrayWithValues
